@@ -27,9 +27,9 @@ public class FilmController {
         return new ArrayList<>(films.values());
     }
 
-    public void validate(@RequestBody @Valid Film film){
+    public void validate(@RequestBody @Valid Film film) {
         FilmValidator.validate(film);
-        if(films.values().stream().anyMatch(u -> u.getName().equals(film.getName()))){
+        if (films.values().stream().anyMatch(u -> u.getName().equals(film.getName()))) {
             log.error("Фильм с названием {} уже был добавлен", film.getName());
             throw new RuntimeException("Фильм с названием уже был добавлен в мапу");
         }
