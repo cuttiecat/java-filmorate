@@ -1,13 +1,14 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.validators.FilmValidator;
 
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,9 +17,10 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/films")
+@Validated
+
 public class FilmController {
     private int filmId = 1;
-    private static final LocalDate BIRTHDAY_MOVIES = LocalDate.of(1895, 12, 28);
     private final Map<Integer, Film> films = new HashMap<>();
 
     @GetMapping
@@ -27,30 +29,28 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film addFilm(@Valid @RequestBody Film film) {
-        log.debug("Добавление фильма {}", film);
-        checkFilmDate(film);
-        film.setId(filmId++);
-        films.put(film.getId(), film);
-        return film;
+    public Film addFilm(@RequestBody @Valid Film film) throws ValidationException {
+        FilmValidator.validate(film);
+        if (films.values().stream().noneMatch(u -> u.getName().equals(film.getName()))) {
+            film.setId(filmId++);
+            films.put(film.getId(), film);
+            log.error("Фильм с названием {} добавлен!", film.getName());
+            return film;
+        } else {
+            log.error("Фильм с названием {} уже был добавлен", film.getName());
+            throw new RuntimeException("Фильм с названием уже был добавлен в мапу");
+        }
     }
 
     @PutMapping
-    public Film updateFilm(@RequestBody Film film) {
+    public Film updateFilm(@RequestBody @Valid Film film) {
         log.debug("Обновление фильма {}", film);
-        if (!films.containsKey(film.getId())) {
-            log.error("фильма c id {} нет", film.getId());
-            throw new ValidationException("Фильм не найден для обновления!");
-        }
-        checkFilmDate(film);
-        films.put(film.getId(), film);
-        return film;
-    }
-
-    public void checkFilmDate(Film film) {
-        if (film.getReleaseDate().isAfter(BIRTHDAY_MOVIES)) {
-            log.error("дата релиза — не должна быть раньше 28 декабря 1895 года");
-            throw new ValidationException("дата релиза — не должна быть раньше 28 декабря 1895 года;");
+        if (films.containsKey(film.getId())) {
+            films.put(film.getId(), film);
+            return film;
+        } else {
+            log.error("Фильм с id = {} не найден", film.getId());
+            throw new RuntimeException("Фильм с таким ID не найден");
         }
     }
 }
