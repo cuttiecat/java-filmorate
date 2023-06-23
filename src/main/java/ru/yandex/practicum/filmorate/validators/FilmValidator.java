@@ -16,7 +16,7 @@ public class FilmValidator {
             log.info("Продолжительность фильма должна быть положительной");
             throw new ValidationException("Продолжительность фильма должна быть положительной!");
         }
-        if (StringUtils.hasText(film.getName())) {
+        if (!StringUtils.hasText(film.getName())) {
             log.info("Название фильма не может быть пустым");
             throw new ValidationException("Название фильма не может быть пустым!");
         }
