@@ -3,11 +3,11 @@ package ru.yandex.practicum.filmorate.validators;
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-
 import java.time.LocalDate;
 
 @Slf4j
 public class FilmValidator {
+
     private static final LocalDate BIRTHDAY_MOVIES = LocalDate.of(1895, 12, 28);
 
     public static boolean validate(Film film) throws ValidationException {
@@ -15,7 +15,7 @@ public class FilmValidator {
             log.info("Продолжительность фильма должна быть положительной");
             throw new ValidationException("Продолжительность фильма должна быть положительной!");
         }
-        if (film.getName() == null || film.getName().equals("")) {
+        if (film.getName().isBlank()) {
             log.info("Название фильма не может быть пустым");
             throw new ValidationException("Название фильма не может быть пустым!");
         }
