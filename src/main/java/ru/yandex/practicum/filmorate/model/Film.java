@@ -7,7 +7,6 @@ import java.time.LocalDate;
 
 @Data
 public class Film {
-    @Null
     private Integer id;
     @NotBlank
     private String name;
@@ -18,14 +17,10 @@ public class Film {
     @Positive
     private Integer duration;
 
-    public Film(String name, String description, LocalDate releaseDate, int duration) {
+    public Film(String name, String description, LocalDate releaseDate, Integer duration) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
-    }
-
-    public Film() {
-
     }
 }
