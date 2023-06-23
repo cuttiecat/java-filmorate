@@ -1,91 +1,131 @@
 package ru.yandex.practicum.filmorate.FilmTests;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.validators.FilmValidator;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.util.Set;
 
 public class FilmValidationTests {
+    private Validator validator;
     private Film film;
 
-    @Test
-    public void shouldSuccessfullyValidateCorrectFilm() {
-        film = new Film("Тайна Коко", "шедевр",
-                LocalDate.of(2017, 1, 1), 105);
-        assertDoesNotThrow(() -> FilmValidator.validate(film));
+    @BeforeEach
+    public void setUp() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        factory.getConstraintValidatorFactory();
+        validator = factory.getValidator();
+        film = new Film();
     }
 
     @Test
-    public void shouldThrowExceptionWhenNameIsEmpty() {
-        film = new Film("", "шедевр",
-                LocalDate.of(2017, 1, 1), 105);
-        assertThrows(ValidationException.class, () -> FilmValidator.validate(film));
+    public void incorrectFormatOfFilmIdShouldFailValidation() {
+        film.setId(123);
+
+        film.setName("Зеленая миля");
+        film.setReleaseDate(LocalDate.of(2018, 1, 1));
+        film.setDuration(155);
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Assertions.assertFalse(violations.isEmpty());
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenReleaseDateIs28_12_1895() {
-        film = new Film("Тайна Коко", "шедевр",
-                LocalDate.of(1895, 12, 28), 105);
-        assertDoesNotThrow(() -> FilmValidator.validate(film));
+    public void correctFormatOfFilmIdShouldFailValidation() {
+        film.setId(null);
+
+        film.setName("Зеленая миля");
+        film.setReleaseDate(LocalDate.of(2018, 1, 1));
+        film.setDuration(155);
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Assertions.assertTrue(violations.isEmpty());
     }
 
     @Test
-    public void shouldThrowExceptionWhenReleaseDateIsBefore28_12_1895() {
-        film = new Film("Тайна Коко", "шедевр",
-                LocalDate.of(1895, 12, 27), 105);
-        assertThrows(ValidationException.class, () -> FilmValidator.validate(film));
+    public void incorrectFormatOfFilmNameShouldFailValidation1() {
+        film.setName("   ");
+        film.setReleaseDate(LocalDate.of(2018, 1, 1));
+        film.setDuration(155);
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Assertions.assertFalse(violations.isEmpty());
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenDurationIsPositive() {
-        film = new Film("Тайна Коко", "шедевр",
-                LocalDate.of(1895, 12, 28), 1);
-        assertDoesNotThrow(() -> FilmValidator.validate(film));
+    public void incorrectFormatOfFilmNameShouldFailValidation2() {
+        film.setName("");
+        film.setReleaseDate(LocalDate.of(2018, 1, 1));
+        film.setDuration(155);
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Assertions.assertFalse(violations.isEmpty());
     }
 
     @Test
-    public void shouldThrowExceptionWhenDurationIsZero() {
-        film = new Film("Тайна Коко", "шедевр",
-                LocalDate.of(1895, 12, 27), 0);
-        assertThrows(ValidationException.class, () -> FilmValidator.validate(film));
+    public void incorrectFormatOfFilmDescCharLengIs201ShouldFailValidation() {
+        film.setName("Зеленая миля");
+        film.setReleaseDate(LocalDate.of(2018, 1, 1));
+        film.setDuration(155);
+        film.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod" +
+                " tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud " +
+                "exerci tatios");
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Assertions.assertFalse(violations.isEmpty());
     }
 
     @Test
-    public void shouldThrowExceptionWhenDurationIsNegative() {
-        film = new Film("Тайна Коко", "шедевр",
-                LocalDate.of(1895, 12, 28), -1);
-        assertThrows(ValidationException.class, () -> FilmValidator.validate(film));
+    public void correctFormatOfFilmDescCharLengIs200ShouldPassValidation() {
+        film.setName("Зеленая миля");
+        film.setReleaseDate(LocalDate.of(2018, 1, 1));
+        film.setDuration(155);
+        film.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod" +
+                " tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud " +
+                "exerci tatio");
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Assertions.assertTrue(violations.isEmpty());
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenDescriptionIs200Symbols() {
-        String str = "1";
-        for (int i = 0; i < 199; i++) {
-            str += "w";
-        }
-
-        film = new Film("Тайна Коко", str,
-                LocalDate.of(1895, 12, 28), 144);
-        assertDoesNotThrow(() -> FilmValidator.validate(film));
+    public void incorrectFormatOfFilmReleaseDateShouldFailValidation() {
+        film.setName("Зеленая миля");
+        film.setDuration(155);
+        film.setDescription("Lo");
+        film.setReleaseDate(null);
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Assertions.assertFalse(violations.isEmpty());
     }
 
     @Test
-    public void shouldThrowExceptionWhenDescriptionIsLonger200Symbols() {
-        String str = "1";
-        for (int i = 0; i < 200; i++) {
-            str += "w";
-        }
-
-        film = new Film("Тайна Коко", str,
-                LocalDate.of(1895, 12, 28), 144);
-        assertThrows(ValidationException.class, () -> FilmValidator.validate(film));
+    public void correctFormatOfFilmReleaseDateShouldPassValidation() {
+        film.setName("Зеленая миля");
+        film.setDuration(155);
+        film.setDescription("Lo");
+        film.setReleaseDate(LocalDate.of(2018, 1, 1));
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Assertions.assertTrue(violations.isEmpty());
     }
 
+    @Test
+    public void incorrectFormatOfFilmDurationShouldFailValidation() {
+        film.setName("Зеленая миля");
+        film.setDuration(0);
+        film.setDescription("Lo");
+        film.setReleaseDate(LocalDate.of(2018, 1, 1));
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Assertions.assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void correctFormatOfFilmDurationShouldFailValidation() {
+        film.setName("Зеленая миля");
+        film.setDuration(155);
+        film.setDescription("Lo");
+        film.setReleaseDate(LocalDate.of(2018, 1, 1));
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Assertions.assertTrue(violations.isEmpty());
+    }
 
 }
