@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.validators;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import java.time.LocalDate;
@@ -15,7 +16,7 @@ public class FilmValidator {
             log.info("Продолжительность фильма должна быть положительной");
             throw new ValidationException("Продолжительность фильма должна быть положительной!");
         }
-        if (film.getName().isBlank()) {
+        if (!StringUtils.hasText(film.getName())) {
             log.info("Название фильма не может быть пустым");
             throw new ValidationException("Название фильма не может быть пустым!");
         }
