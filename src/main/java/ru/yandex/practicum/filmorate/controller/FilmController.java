@@ -1,9 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.validators.FilmValidator;
 
@@ -17,7 +15,6 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/films")
-@Validated
 
 public class FilmController {
     private int filmId = 1;
@@ -29,19 +26,21 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film addFilm(@RequestBody @Valid Film film) throws ValidationException {
-        FilmValidator.validate(film);
+    public Film addFilm(@RequestBody @Valid Film film) {
         if (films.values().stream().noneMatch(u -> u.getName().equals(film.getName()))) {
             film.setId(filmId++);
             films.put(film.getId(), film);
             log.error("Фильм с названием {} добавлен!", film.getName());
-            return film;
-        } else {
+        }
+        return film;
+    }
+    @PostMapping
+    public void Validation(@RequestBody @Valid Film film) {
+        if (films.values().stream().anyMatch(u -> u.getName().equals(film.getName()))) {
             log.error("Фильм с названием {} уже был добавлен", film.getName());
             throw new RuntimeException("Фильм с названием уже был добавлен в мапу");
         }
     }
-
     @PutMapping
     public Film updateFilm(@RequestBody @Valid Film film) {
         log.debug("Обновление фильма {}", film);

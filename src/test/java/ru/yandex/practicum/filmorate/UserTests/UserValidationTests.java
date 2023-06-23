@@ -68,6 +68,7 @@ public class UserValidationTests {
                 LocalDate.of(2030, 1, 29));
         assertThrows(ValidationException.class, () -> UserValidator.validate(user));
     }
+
     @Test
     public void shouldNotThrowExceptionWhenBirthdayIsToday() {
         user = new User("java@gmail.com", "Крол33", "Катя",
