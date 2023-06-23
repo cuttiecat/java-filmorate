@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.validators.FilmValidator;
 
 
 import javax.validation.Valid;
@@ -34,13 +33,15 @@ public class FilmController {
         }
         return film;
     }
+
     @PostMapping
-    public void Validation(@RequestBody @Valid Film film) {
+    public void validation(@RequestBody @Valid Film film) {
         if (films.values().stream().anyMatch(u -> u.getName().equals(film.getName()))) {
             log.error("Фильм с названием {} уже был добавлен", film.getName());
             throw new RuntimeException("Фильм с названием уже был добавлен в мапу");
         }
     }
+
     @PutMapping
     public Film updateFilm(@RequestBody @Valid Film film) {
         log.debug("Обновление фильма {}", film);
