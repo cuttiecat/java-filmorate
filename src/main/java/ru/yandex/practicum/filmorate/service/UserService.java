@@ -15,6 +15,8 @@ public class UserService {
     private InMemoryUserStorage inMemoryUserStorage;
     @Autowired
     private UserStorage userStorage;
+    @Autowired
+    private ValidationService validationService;
     long id = 1;
 
     public List<User> findAll() {
@@ -22,7 +24,7 @@ public class UserService {
     }
 
     public User add(User user) {
-        ValidationService.validate(user);
+        validationService.validate(user);
         user.setId(id++);
         if (user.getName() == null || user.getName().equals("")) {
             user.setName(user.getLogin());
@@ -32,7 +34,7 @@ public class UserService {
     }
 
     public User update(User user) {
-        ValidationService.validate(user);
+        validationService.validate(user);
         if (userStorage.getById(user.getId()) == null) {
             throw new RuntimeException("Пользователь для обновления не найден");
         }
