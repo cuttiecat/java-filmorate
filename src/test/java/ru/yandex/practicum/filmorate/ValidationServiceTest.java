@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ValidationServiceTest {
+    ValidationService validationService;
 
     @Test
     public void validateUserWithLoginBlank() {
@@ -20,7 +21,7 @@ public class ValidationServiceTest {
         user.setEmail("email@email.ru");
         user.setBirthday(LocalDate.of(1980, 11, 15));
 
-        assertThrows(ValidationException.class, () -> ValidationService.validate(user));
+        assertThrows(ValidationException.class, () -> validationService.validate(user));
     }
 
     @Test
@@ -31,7 +32,7 @@ public class ValidationServiceTest {
         user.setEmail("email@email.ru");
         user.setBirthday(LocalDate.of(1980, 11, 15));
 
-        assertThrows(ValidationException.class, () -> ValidationService.validate(user));
+        assertThrows(ValidationException.class, () -> validationService.validate(user));
     }
 
     @Test
@@ -41,7 +42,7 @@ public class ValidationServiceTest {
         user.setLogin("Login");
         user.setBirthday(LocalDate.of(1980, 11, 15));
 
-        assertThrows(ValidationException.class, () -> ValidationService.validate(user));
+        assertThrows(ValidationException.class, () -> validationService.validate(user));
     }
 
     @Test
@@ -52,7 +53,7 @@ public class ValidationServiceTest {
         user.setEmail("emailemail.ru");
         user.setBirthday(LocalDate.of(1980, 11, 15));
 
-        assertThrows(ValidationException.class, () -> ValidationService.validate(user));
+        assertThrows(ValidationException.class, () -> validationService.validate(user));
     }
 
     @Test
@@ -63,7 +64,7 @@ public class ValidationServiceTest {
         user.setEmail("");
         user.setBirthday(LocalDate.of(1980, 11, 15));
 
-        assertThrows(ValidationException.class, () -> ValidationService.validate(user));
+        assertThrows(ValidationException.class, () -> validationService.validate(user));
     }
 
     @Test
@@ -74,7 +75,7 @@ public class ValidationServiceTest {
         user.setEmail("email@email.ru");
         user.setBirthday(LocalDate.of(3000, 11, 15));
 
-        assertThrows(ValidationException.class, () -> ValidationService.validate(user));
+        assertThrows(ValidationException.class, () -> validationService.validate(user));
     }
 
     @Test
@@ -84,7 +85,7 @@ public class ValidationServiceTest {
         film.setDescription("Description");
         film.setReleaseDate(LocalDate.of(1980, 12, 30));
 
-        assertThrows(ValidationException.class, () -> ValidationService.validate(film));
+        assertThrows(ValidationException.class, () -> validationService.validate(film));
     }
 
     @Test
@@ -95,7 +96,7 @@ public class ValidationServiceTest {
         film.setDescription("Description");
         film.setReleaseDate(LocalDate.of(1980, 12, 30));
 
-        assertThrows(ValidationException.class, () -> ValidationService.validate(film));
+        assertThrows(ValidationException.class, () -> validationService.validate(film));
     }
 
     @Test
@@ -106,7 +107,7 @@ public class ValidationServiceTest {
         film.setDescription("Descriptionvnjvsdvnsdnvjsdnvjksdnvjksdnvjksndkjvnsdjkvnsdkjvnsdkjnvksjdnvkjsdnvkssdnvjksndvkjsndvjknsdjvnsjdkvnjksdnvjksdnvjsndjkvnsdkjvnsjkdnvjksdnvjksdnvjknsdjkvnsdkjvnskdjvnksjdnvkjsdnvjksdnvkjsndkvnsdkj");
         film.setReleaseDate(LocalDate.of(1980, 12, 30));
 
-        assertThrows(ValidationException.class, () -> ValidationService.validate(film));
+        assertThrows(ValidationException.class, () -> validationService.validate(film));
     }
 
     @Test
@@ -117,7 +118,7 @@ public class ValidationServiceTest {
         film.setDescription("Description");
         film.setReleaseDate(LocalDate.of(1800, 12, 30));
 
-        assertThrows(ValidationException.class, () -> ValidationService.validate(film));
+        assertThrows(ValidationException.class, () -> validationService.validate(film));
     }
 
     @Test
@@ -128,6 +129,6 @@ public class ValidationServiceTest {
         film.setDescription("Description");
         film.setReleaseDate(LocalDate.of(1980, 12, 30));
 
-        assertThrows(ValidationException.class, () -> ValidationService.validate(film));
+        assertThrows(ValidationException.class, () -> validationService.validate(film));
     }
 }
