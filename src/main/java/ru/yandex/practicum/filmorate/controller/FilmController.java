@@ -40,7 +40,7 @@ public class FilmController {
         FilmValidator.validate(film);
         if (films.values().stream().noneMatch(u -> u.getName().equals(film.getName()))) {
             film.setId(filmId++);
-            films.put(film.getId(), film);
+            films.put((int) film.getId(), film);
             log.error("Фильм с названием {} добавлен!", film.getName());
         }
         return film;
@@ -50,7 +50,7 @@ public class FilmController {
     public Film updateFilm(@RequestBody @Valid Film film) {
         log.debug("Обновление фильма {}", film);
         if (films.containsKey(film.getId())) {
-            films.put(film.getId(), film);
+            films.put((int) film.getId(), film);
             return film;
         } else {
             log.error("Фильм с id = {} не найден", film.getId());

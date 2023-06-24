@@ -27,7 +27,7 @@ public class UserController {
         UserValidator.validate(user);
         if (users.values().stream().noneMatch(u -> u.getLogin().equals(user.getLogin()))) {
             user.setId(userId++);
-            users.put(user.getId(), user);
+            users.put((int) user.getId(), user);
             log.error("User c логином {} добавлен", user.getLogin());
             return user;
         } else {
@@ -46,7 +46,7 @@ public class UserController {
         log.debug("Обновление данных пользователя {}", user);
 
         if (users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
+            users.put((int) user.getId(), user);
             return user;
         } else {
             log.error("User с id = {} не найден", user.getId());
