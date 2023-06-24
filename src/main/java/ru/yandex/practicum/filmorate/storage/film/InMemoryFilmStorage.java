@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
-    Map<Long, Film> films = new LinkedHashMap<>();
+    private final Map<Long, Film> films = new LinkedHashMap<>();
 
     public void add(Film film) {
         films.put(film.getId(), film);
@@ -22,5 +22,20 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     public List<Film> findAll() {
         return new ArrayList<>(films.values());
+    }
+
+    public List<Film> getTopFilms(int count) {
+        List<Film> topFilms = new ArrayList<>();
+        List<Film> allFilms = findAll();
+        allFilms.sort((Film film1, Film film2) -> film2.getUsersWhoLikes().size() - film1.getUsersWhoLikes().size());
+
+        if (allFilms.size() > count) {
+            for (int i = 0; i < count; i++) {
+                topFilms.add(allFilms.get(i));
+            }
+        } else {
+            topFilms.addAll(allFilms);
+        }
+        return topFilms;
     }
 }

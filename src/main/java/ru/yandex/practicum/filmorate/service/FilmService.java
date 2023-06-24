@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.ArrayList;
@@ -12,9 +13,13 @@ import java.util.List;
 @Service
 public class FilmService {
     @Autowired
+    InMemoryFilmStorage inMemoryFilmStorage;
+    @Autowired
     FilmStorage filmStorage;
     @Autowired
     UserStorage userStorage;
+    @Autowired
+    ValidationService validationService;
     long id = 1;
 
     public List<Film> findAll() {
@@ -30,14 +35,14 @@ public class FilmService {
     }
 
     public Film add(Film film) {
-        ValidationService.validate(film);
+        validationService.validate(film);
         film.setId(id++);
         filmStorage.add(film);
         return film;
     }
 
     public Film update(Film film) {
-        ValidationService.validate(film);
+        validationService.validate(film);
         if (filmStorage.getById(film.getId()) == null) {
             throw new RuntimeException("Фильм для обновления не найден");
         }
@@ -68,19 +73,7 @@ public class FilmService {
     }
 
     public List<Film> getTopFilms(int count) {
-        List<Film> topFilms = new ArrayList<>();
-        List<Film> allFilms = filmStorage.findAll();
-
-        allFilms.sort((Film film1, Film film2) -> film2.getUsersWhoLikes().size() - film1.getUsersWhoLikes().size());
-
-        if (allFilms.size() > count) {
-            for (int i = 0; i < count; i++) {
-                topFilms.add(allFilms.get(i));
-            }
-        } else {
-            topFilms.addAll(allFilms);
-        }
-        return topFilms;
+        return inMemoryFilmStorage.getTopFilms(count);
     }
 }
 

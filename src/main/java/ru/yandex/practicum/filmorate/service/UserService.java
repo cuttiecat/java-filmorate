@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.ArrayList;
@@ -11,7 +12,11 @@ import java.util.List;
 @Service
 public class UserService {
     @Autowired
+    private InMemoryUserStorage inMemoryUserStorage;
+    @Autowired
     private UserStorage userStorage;
+    @Autowired
+    ValidationService validationService;
     long id = 1;
 
     public List<User> findAll() {
@@ -19,7 +24,7 @@ public class UserService {
     }
 
     public User add(User user) {
-        ValidationService.validate(user);
+        validationService.validate(user);
         user.setId(id++);
         if (user.getName() == null || user.getName().equals("")) {
             user.setName(user.getLogin());
@@ -29,7 +34,7 @@ public class UserService {
     }
 
     public User update(User user) {
-        ValidationService.validate(user);
+        validationService.validate(user);
         if (userStorage.getById(user.getId()) == null) {
             throw new RuntimeException("Пользователь для обновления не найден");
         }
@@ -70,17 +75,7 @@ public class UserService {
     }
 
     public List<User> findAllFriends(long userId) {
-        User user = userStorage.getById(userId);
-        List<User> users = new ArrayList<>();
-
-        if (user == null)
-            throw new RuntimeException("Пользователь не найден");
-
-        for (Long friendId : user.getFriends()) {
-            users.add(userStorage.getById(friendId));
-        }
-
-        return users;
+        return inMemoryUserStorage.findAllFriends(userId);
     }
 
     public List<User> commonFriends(long userId1, long userId2) {
