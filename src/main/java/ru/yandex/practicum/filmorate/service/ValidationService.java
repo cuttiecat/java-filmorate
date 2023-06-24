@@ -8,14 +8,13 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 
-@Service
 @Slf4j
 public class ValidationService {
     private static final LocalDate LIMIT_DATE = LocalDate.of(1895, 12, 28);
     private static final String USER_VALIDATION_MESSAGE = "User validation failed";
     private static final String FILM_VALIDATION_MESSAGE = "Film validation failed";
 
-    public void validate(User user) {
+    public static void validate(User user) {
         if (user.getEmail() == null ||
                 user.getEmail().isBlank() ||
                 !user.getEmail().contains("@") ||
@@ -27,7 +26,7 @@ public class ValidationService {
         }
     }
 
-    public void validate(Film film) {
+    public static void validate(Film film) {
         if (film.getName() == null ||
                 film.getName().isBlank() ||
                 film.getDescription().length() > 200 ||

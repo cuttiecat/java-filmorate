@@ -16,8 +16,6 @@ public class FilmService {
     FilmStorage filmStorage;
     @Autowired
     UserStorage userStorage;
-    @Autowired
-    ValidationService validationService;
     long id = 1;
 
     public List<Film> findAll() {
@@ -33,14 +31,14 @@ public class FilmService {
     }
 
     public Film add(Film film) {
-        validationService.validate(film);
+        ValidationService.validate(film);
         film.setId(id++);
         filmStorage.add(film);
         return film;
     }
 
     public Film update(Film film) {
-        validationService.validate(film);
+        ValidationService.validate(film);
         if (filmStorage.getById(film.getId()) == null) {
             throw new RuntimeException("Фильм для обновления не найден");
         }
