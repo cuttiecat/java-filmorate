@@ -2,25 +2,28 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
 
-import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class Film {
-    private Integer id;
-    @NotBlank
-    private String name;
-    @Size(max = 200)
-    private String description;
-    @NotNull
-    private LocalDate releaseDate;
-    @Positive
-    private Integer duration;
+    long id;
+    String name;
+    String description;
+    LocalDate releaseDate;
+    int duration;
+    Set<Long> usersWhoLikes = new HashSet<>();
 
-    public Film(String name, String description, LocalDate releaseDate, Integer duration) {
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
+    public Set<Long> getUsersWhoLikes() {
+        return usersWhoLikes;
+    }
+
+    public void addToUsersWhoLikes(long id) {
+        usersWhoLikes.add(id);
+    }
+
+    public void removeFromUsersWhoLikes(long id) {
+        usersWhoLikes.remove(id);
     }
 }
