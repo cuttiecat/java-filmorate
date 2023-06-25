@@ -1,12 +1,14 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 
+@Service
 @Slf4j
 public class ValidationService {
     private static final LocalDate LIMIT_DATE = LocalDate.of(1895, 12, 28);
