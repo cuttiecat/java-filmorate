@@ -40,7 +40,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public boolean ExistId(long id) {
+    public boolean existId(long id) {
         return false;
     }
 

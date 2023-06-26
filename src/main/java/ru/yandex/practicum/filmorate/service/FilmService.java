@@ -57,7 +57,7 @@ public class FilmService {
     }
 
     public void likeFilm(long id, long userId) {
-        if (!userStorage.ExistId(userId)) {
+        if (!userStorage.existId(userId)) {
             throw new RuntimeException("User is not found");
         }
         Film film = filmStorage.getById(id);

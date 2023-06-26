@@ -15,5 +15,5 @@ public interface UserStorage {
 
     void deleteUser(long id);
 
-    boolean ExistId(long id);
+    boolean existId(long id);
 }

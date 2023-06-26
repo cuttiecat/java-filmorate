@@ -58,7 +58,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public boolean ExistId(long id) {
+    public boolean existId(long id) {
         String sqlQuery = "select exists(select 1 from users where id = ?)";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlQuery, id);
         log.info("SQL Query for user id:" + id);
