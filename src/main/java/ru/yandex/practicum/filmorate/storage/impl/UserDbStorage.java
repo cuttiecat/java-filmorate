@@ -58,6 +58,19 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
+    public boolean ExistId(long id) {
+        String sqlQuery = "select exists(select 1 from users where id = ?)";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlQuery, id);
+        log.info("SQL Query for user id:" + id);
+        if (rowSet.next()) {
+            LocalDate birthday = dateFormatter(Objects.requireNonNull(rowSet.getString("birthday")));
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
         String sqlQuery = "select * from users";

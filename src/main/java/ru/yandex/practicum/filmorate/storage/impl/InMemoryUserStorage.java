@@ -38,4 +38,10 @@ public class InMemoryUserStorage implements UserStorage {
     public void deleteUser(long id) {
 
     }
+
+    @Override
+    public boolean ExistId(long id) {
+        return false;
+    }
+
 }

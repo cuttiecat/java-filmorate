@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.UserAlreadyExistException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FriendStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -33,11 +34,10 @@ public class UserService {
                     userStr.getEmail().equals(user.getEmail()) ||
                     userStr.getLogin().equals(user.getLogin()) ||
                     userStr.getBirthday() == user.getBirthday()) {
-                throw new RuntimeException("Такой user уже существует!");
+                throw new UserAlreadyExistException("Такой пользователь уже существует!");
             }
         }
-        User addedUser = userStorage.add(user);
-        return addedUser;
+        return userStorage.add(user);
     }
 
     public User update(User user) {
@@ -57,26 +57,26 @@ public class UserService {
         return user;
     }
 
-    public void addToFriends(long userId1, long userId2) {
-        User user1 = userStorage.findById(userId1);
-        User user2 = userStorage.findById(userId2);
+    public void addToFriends(long userId, long anotherUser) {
+        User user1 = userStorage.findById(userId);
+        User user2 = userStorage.findById(anotherUser);
 
         if (user1 == null || user2 == null) {
             throw new RuntimeException("Невозможно добавить пользователя в друзья т.к. один из пользователей не найден");
         }
 
-        friendStorage.addToFriends(userId1, userId2);
+        friendStorage.addToFriends(userId, anotherUser);
     }
 
-    public void deleteFromFriends(long userId1, long userId2) {
-        User user1 = userStorage.findById(userId1);
-        User user2 = userStorage.findById(userId2);
+    public void deleteFromFriends(long userId, long anotherUserId) {
+        User user1 = userStorage.findById(userId);
+        User user2 = userStorage.findById(anotherUserId);
 
         if (user1 == null || user2 == null) {
             throw new RuntimeException("Невозможно удалить пользователя из друзей т.к. один из пользователей не найден");
         }
 
-        friendStorage.removeFromFriends(userId1, userId2);
+        friendStorage.removeFromFriends(userId, anotherUserId);
     }
 
     public List<User> findAllFriends(long userId) {
@@ -88,13 +88,13 @@ public class UserService {
         return friendStorage.findAllFriends(userId);
     }
 
-    public List<User> commonFriends(long userId1, long userId2) {
-        List<User> user1friends = findAllFriends(userId1);
-        List<User> user2friends = findAllFriends(userId2);
+    public List<User> commonFriends(long userId, long anotherUserId) {
+        List<User> userFriends = findAllFriends(userId);
+        List<User> anotherFriends = findAllFriends(anotherUserId);
         List<User> commonFriends = new ArrayList<>();
 
-        for (User user1friend : user1friends) {
-            if (user2friends.contains(user1friend))
+        for (User user1friend : userFriends) {
+            if (anotherFriends.contains(user1friend))
                 commonFriends.add(user1friend);
         }
 
