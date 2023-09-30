@@ -3,8 +3,8 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class Film {
@@ -13,17 +13,23 @@ public class Film {
     String description;
     LocalDate releaseDate;
     int duration;
-    Set<Long> usersWhoLikes = new HashSet<>();
+    Mpa mpa;
+    List<Genre> genres = new ArrayList<>();
 
-    public Set<Long> getUsersWhoLikes() {
-        return usersWhoLikes;
+    public Film() {
     }
 
-    public void addToUsersWhoLikes(long id) {
-        usersWhoLikes.add(id);
+    public Film(long id, String name, String description, LocalDate releaseDate, int duration, Mpa mpa) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.mpa = mpa;
     }
 
-    public void removeFromUsersWhoLikes(long id) {
-        usersWhoLikes.remove(id);
+    public void addGenre(Genre genre) {
+        genres.add(genre);
     }
+
 }
